@@ -12,7 +12,7 @@
  * @return {string}
  */
 export default function getUrl(
-	{ name, slug, example, anchor, isolated, nochrome, absolute } = {},
+	{ name, slug, example, anchor, isolated, router, nochrome, absolute, id, pathName } = {},
 	{ origin, pathname } = window.location
 ) {
 	let url = pathname;
@@ -25,6 +25,12 @@ export default function getUrl(
 		url += `#${slug}`;
 	} else if (isolated || nochrome) {
 		url += `#!/${name}`;
+	} else if (router) {
+		url += `#/${pathName.join('/')}`;
+	}
+
+	if (id) {
+		url += '?id=' + id;
 	}
 
 	if (example !== undefined) {

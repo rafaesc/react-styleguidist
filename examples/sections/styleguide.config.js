@@ -26,13 +26,15 @@ module.exports = {
 					],
 				},
 			],
+			sectionDepth: 2,
 		},
 		{
 			name: 'Components',
 			content: 'docs/Components.md',
 			sections: [
 				{
-					name: 'Buttons',
+					name: 'Button',
+					content: 'docs/Files.md',
 					components: () => ['./src/components/Button/Button.js'],
 					codeSamples: 'expand', // 'hide' | 'collapse' | 'expand'
 					propsMethods: 'hide', // 'hide' | 'collapse' | 'expand'
@@ -50,6 +52,7 @@ module.exports = {
 					propsMethods: 'collapse', // 'hide' | 'collapse' | 'expand'
 				},
 			],
+			sectionDepth: 0,
 		},
 	],
 	require: [path.join(__dirname, 'src/styles.css')],

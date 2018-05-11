@@ -10,7 +10,8 @@ let codeRevision = 0;
 
 /** Scrolls to origin when current window location hash points to an isolated view. */
 const scrollToOrigin = () => {
-	if (window.location.hash.indexOf('#!/') === 0) {
+	const hash = window.location.hash;
+	if (hash.indexOf('#!/') === 0 || hash.indexOf('#/') === 0) {
 		window.scrollTo(0, 0);
 	}
 };

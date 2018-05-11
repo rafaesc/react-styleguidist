@@ -35,25 +35,58 @@ const getFirstSectionOrComponent = sections => {
  */
 export default function getRouteData(sections, hash, pagePerSection) {
 	// Parse URL hash to check if the components list must be filtered
+	const infoFromHash = getInfoFromHash(hash, pagePerSection);
+
+	// Name of the filtered component/section to show isolated (/#!/Button → Button)
+	let { targetName } = infoFromHash;
+
 	const {
-		// Name of the filtered component/section to show isolated (/#!/Button → Button)
-		targetName,
 		// Index of the fenced block example of the filtered component isolate (/#!/Button/1 → 1)
 		targetIndex,
-	} = getInfoFromHash(hash);
+		tokens,
+		isolate,
+	} = infoFromHash;
 
-	let displayMode = DisplayModes.all;
+	let displayMode = isolate ? DisplayModes.example : DisplayModes.all;
 
-	// Filter the requested component if required
 	if (targetName) {
-		const filteredSections = filterComponentsInSectionsByExactName(sections, targetName);
-		if (filteredSections.length) {
-			sections = filteredSections;
-			displayMode = DisplayModes.component;
+		let filteredSections;
+		if (pagePerSection) {
+			let sectionDepth = 0;
+			tokens.forEach((tokenName, index) => {
+				filteredSections = filterComponentsInSectionsByExactName(sections, tokenName);
+				if (filteredSections.length) {
+					sections = filteredSections;
+				} else {
+					let section = findSection(sections, tokenName);
+					if (section) {
+						sectionDepth = section.sectionDepth ? section.sectionDepth : sectionDepth;
+						const filterChildren = sectionDepth > index && !tokens[index + 1];
+						if (filterChildren) {
+							section = {
+								...section,
+								sections: [],
+								components: [],
+							};
+						}
+						sections = [section];
+					} else {
+						sections = [];
+					}
+				}
+			});
+			targetName = tokens[tokens.length - 1];
 		} else {
-			const section = findSection(sections, targetName);
-			sections = section ? [section] : [];
-			displayMode = DisplayModes.section;
+			// Filter the requested component if required
+			filteredSections = filterComponentsInSectionsByExactName(sections, targetName, true);
+			if (filteredSections.length) {
+				sections = filteredSections;
+				displayMode = DisplayModes.component;
+			} else {
+				const section = findSection(sections, targetName);
+				sections = section ? [section] : [];
+				displayMode = DisplayModes.section;
+			}
 		}
 
 		// If a single component or section is filtered and a fenced block index is specified hide all other examples
@@ -72,9 +105,6 @@ export default function getRouteData(sections, hash, pagePerSection) {
 				displayMode = DisplayModes.example;
 			}
 		}
-	} else if (pagePerSection) {
-		// If one component per page mode then show demos for first component
-		sections = [getFirstSectionOrComponent(sections)];
 	}
 
 	return { sections, displayMode };

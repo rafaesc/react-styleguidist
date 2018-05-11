@@ -8,7 +8,7 @@ export const EXAMPLE_TAB_CODE_EDITOR = 'rsg-code-editor';
 export const DOCS_TAB_USAGE = 'rsg-usage';
 
 export default ({ pagePerSection }) => {
-	const toolbar = pagePerSection ? [] : [IsolateButton];
+	const toolbar = [IsolateButton];
 
 	return {
 		sectionToolbar: toolbar,

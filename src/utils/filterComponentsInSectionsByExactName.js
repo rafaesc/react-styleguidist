@@ -5,9 +5,10 @@ import filterComponentsByExactName from './filterComponentsByExactName';
  *
  * @param {object} sections
  * @param {string} name
+ * @param {boolean} deep
  * @return {Array}
  */
-export default function filterComponentsInSectionsByExactName(sections, name) {
+export default function filterComponentsInSectionsByExactName(sections, name, deep) {
 	const filteredSections = [];
 	sections.forEach(section => {
 		if (section.components) {
@@ -20,7 +21,7 @@ export default function filterComponentsInSectionsByExactName(sections, name) {
 				});
 			}
 		}
-		if (section.sections) {
+		if (section.sections && deep) {
 			filteredSections.push(...filterComponentsInSectionsByExactName(section.sections, name));
 		}
 	});

@@ -53,6 +53,7 @@ function processSection(section, config) {
 		name: section.name,
 		codeSamples: section.codeSamples || config.codeSamples,
 		propsMethods: section.propsMethods || config.propsMethods,
+		sectionDepth: section.sectionDepth,
 		description: section.description,
 		slug: slugger.slug(section.name),
 		sections: getSections(section.sections || [], config),
